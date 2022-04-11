@@ -28,7 +28,6 @@ switch (option){
         var value = prompt('Enter parameter value : ')
         const arr = (value.split(" "));    
         var dbo = db.db("mydb");
-        // for (var i = 0;i <Arr.length;i++){
           for (let i = 0; i < arr.length; i++) {
             var query = {$or: [{name :{$regex :arr[i],$options : 'i'}},{address :{$regex :arr[i],$options : 'i'}}]}
             dbo
@@ -40,7 +39,6 @@ switch (option){
                   db.close();
                 }
                 else if (result.length>0){console.log(result)};
-                // db.close();
               });
           }
       });
