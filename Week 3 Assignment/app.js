@@ -1,6 +1,5 @@
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
-const { exit } = require('process');
 var prompt = require('prompt-sync')();
 var ObjectId = require('mongodb').ObjectID;
 var url = 'mongodb://geru-mongo:lukfhpES1TMCbtUKF6npllAHpaa3Ua9VrK3M9mjJQ3IMFTf6YSrHUg6K6VfzDSIAh407hl16YNiJJoDgfVnjrQ==@geru-mongo.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@geru-mongo@';
@@ -26,21 +25,19 @@ switch (option){
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
         var value = prompt('Enter parameter value : ')
-        const arr = (value.split(" "));    
+        const Arr = (value.split(" "));    
         var dbo = db.db("mydb");
-          for (let i = 0; i < arr.length; i++) {
-            var query = {$or: [{name :{$regex :arr[i],$options : 'i'}},{address :{$regex :arr[i],$options : 'i'}}]}
-            dbo
-              .collection("customers")
-              .find(query)
-              .toArray(function (err, result) {
-                if (err) throw err;
-                else if (i == arr.length - 1) {
-                  db.close();
-                }
-                else if (result.length>0){console.log(result)};
-              });
-          }
+        for (var i = 0;i <Arr.length;i++){
+          var query = {$or: [{name :{$regex :Arr[i],$options : 'i'}},{address :{$regex :Arr[i],$options : 'i'}}]}
+        dbo.collection("customers").find(query).toArray(function(err, result) {
+          if (err) throw err
+          else if(result.length >0){console.log(result)}
+        });
+        }
+        setTimeout(()=>{
+          db.close()
+        },5000)
+
       });
       break;
 
