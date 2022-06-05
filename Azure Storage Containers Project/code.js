@@ -2,12 +2,16 @@ const { Console } = require('console');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 var prompt = require('prompt-sync')();
+const chalk = require('chalk');
 
 
 
-const option = parseInt(prompt("1. Create New Storage Account || 2. Create a container || 3. Upload Blob to container || 4. List the items in container || 0 For exit   "));
+const option = parseInt(prompt(chalk.blue.bold("1. Create New Storage Account || 2. Create a container || 3. Upload Blob to container || 4. List the items in container || 0 For exit   ")));
 
 switch (option){
+
+  case 0:
+    break;
   case 1:
     var storage = prompt('Enter Storage name : ');
     async function test() {
@@ -20,7 +24,7 @@ switch (option){
 
     test().then( x => {
 
-      console.log('Storage account created')
+      console.log(chalk.green.bold('Storage account created'))
     }).catch(err=>{
     console.log(err.stderr)
     })
@@ -39,7 +43,7 @@ switch (option){
 
     test1().then( x => {
 
-      console.log('Container Created')
+      console.log(chalk.green.bold('Container Created'))
     }).catch(err=>{
     console.log(err.stderr)
     })
@@ -47,8 +51,8 @@ switch (option){
 
   case 3:
     var storage = prompt('Enter Storage name : ');
-    var file = prompt('Enter file path : ');
     var cont = prompt('Enter Container name : ');
+    var file = prompt('Enter file path : ');
     var fname = prompt('Enter file name : ');
     async function test2() {
       const { error,stdout, stderr } = await exec('$StorageAccount = Get-AzStorageAccount -ResourceGroupName "arm-vscode" -Name "'+storage+'";$Context = $StorageAccount.Context;$Blob1HT = @{File = '+file+' ; Container        = "'+cont+'";Blob             = "'+fname+'"; Context          = $Context};Set-AzStorageBlobContent @Blob1HT',{'shell':'powershell.exe'});
@@ -60,7 +64,7 @@ switch (option){
 
     test2().then( x => {
 
-      console.log('File Uploaded')
+      console.log(chalk.green.bold('File Uploaded'))
     }).catch(err=>{
     console.log(err.stderr)
     })
@@ -86,5 +90,5 @@ switch (option){
     break;
 
   default :
-  console.log('Enter Valid Option')
+  console.log(chalk.red.bold('Enter Valid Option'))
 }
