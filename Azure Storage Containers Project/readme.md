@@ -1,6 +1,6 @@
 This folder conatins a main file "**code.js**" which offers the following functionalities :- 
 
-<img width="489" alt="image" src="https://user-images.githubusercontent.com/46483573/172058137-6f1d0d55-f81e-46b1-b26e-c1f30bf4b108.png">
+<img width="501" alt="image" src="https://user-images.githubusercontent.com/46483573/172058137-6f1d0d55-f81e-46b1-b26e-c1f30bf4b108.png">
 
 1. User can create a new storage account :- 
 
