@@ -1,0 +1,37 @@
+Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force
+Connect-AzAccount 
+New-AzResourceGroup -Name arm-vscode -Location eastus
+New-AzStorageAccount -ResourceGroupName arm-vscode `
+>>   -Name storage `
+>>   -Location eastus `
+>>   -SkuName Standard_RAGRS `
+>>   -Kind StorageV2
+$key1 = Get-AzStorageAccountKey -ResourceGroupName "arm-vscode" -Name "abc7812"
+
+$StartTime = Get-Date
+$EndTime = $startTime.AddHours(2.0)
+New-AzureStorageBlobSASToken -Container "" -Blob "BlobName" -Permission rwd -StartTime $StartTime -ExpiryTime $EndTime
+
+$context = (Get-AzStorageAccount -ResourceGroupName 'arm-vscode' -AccountName 'abc7812').context
+
+New-AzStorageAccountSASToken -Context (Get-AzStorageAccount -ResourceGroupName 'arm-vscode' -AccountName 'abc7812').context -Service Blob,File,Table,Queue -ResourceType Service,Container,Object -Permission racwdlup
+
+
+$StorageHT = @{
+  ResourceGroupName = $ResourceGroup
+  Name              = 'mystorageaccount'
+  SkuName           = 'Standard_LRS'
+  Location          =  $Location
+}
+$StorageAccount = New-AzStorageAccount @StorageHT
+$Context = $StorageAccount.Context
+
+$ContainerName = 'quickstartblobs'
+New-AzStorageContainer -Name $ContainerName -Context $Context -Permission Blob
+
+
+$Blob1HT = -$File = 'C:\Users\abhis\OneDrive\Desktop\Rick.jpg' -$Container = 'cajbclsa'  -$Blob= "Image001.jpg" -Context= $Context
+
+ $Blob1HT = @{File= "C:\Users\abhis\OneDrive\Desktop\Rick.jpg" ; Container        = "cajbclsa";Blob             = "Image1aca.jpg"; Context          = $Context;StandardBlobTier = 'Hot'};Set-AzStorageBlobContent @Blob1HT
+
+ Get-AzureStorageContainer -Context $ctx
