@@ -83,7 +83,7 @@ switch (option){
 
     test3().then( x => {
 
-      console.log(x)
+      console.log(x.data)
     }).catch(err=>{
     console.log(err.stderr)
     })
