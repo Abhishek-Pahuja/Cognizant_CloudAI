@@ -1,3 +1,6 @@
+// Poweshell command to download Azure Library  ->  Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force
+// Connect to azure account                     ->  Connect-AzAccount 
+
 const { Console } = require('console');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
