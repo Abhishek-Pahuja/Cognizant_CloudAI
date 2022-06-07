@@ -10,7 +10,7 @@ This folder contains a main file "**code.js**" which offers the following functi
 
 <img width="600" alt="image" src="https://user-images.githubusercontent.com/46483573/172058273-82bc47e8-78ef-449a-81e4-1580e2cc5508.png">
 
-3. Users can upload images which are checked for any adult content, objects, brands and faces. If the image does not contain any adult content it is then uploaded as blobs to specific containers along with .txt file blob containing all the analysis data of the picture:-
+3. Users can upload images which are checked for any adult content, objects, brands and faces. If the image does not contain any adult content it is uploaded as blobs to specific containers along with .txt file blob containing all the analysis data of the picture:-
 
 <img width="600" alt="image" src="https://user-images.githubusercontent.com/46483573/172058404-b9a5e3c9-9df5-463b-9076-afc38b7f8651.png">
 
