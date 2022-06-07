@@ -6,6 +6,10 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 var prompt = require('prompt-sync')();
 const chalk = require('chalk');
+const cv_api = require('./cv_api.js')
+const download = require('./download.js')
+const path = require("path");
+const fs = require('fs')
 
 
 
@@ -16,9 +20,10 @@ switch (option){
   case 0:
     break;
   case 1:
-    var storage = prompt('Enter Storage name : ');
+    var storage = prompt(chalk.cyan('Enter Storage name : '));
     async function test() {
-      const { error,stdout, stderr } = await exec('New-AzStorageAccount -ResourceGroupName "arm-vscode" -Name "'+storage+'" -Location "eastus" -SkuName "Standard_RAGRS" -Kind "StorageV2"',{'shell':'powershell.exe'});
+      const { error,stdout, stderr } = await exec('New-AzStorageAccount -ResourceGroupName "arm-vscode" -Name "'+storage+
+                                                  '" -Location "eastus" -SkuName "Standard_RAGRS" -Kind "StorageV2"',{'shell':'powershell.exe'});
       if (stderr) {
         return {"error": stderr};
       }
@@ -37,7 +42,9 @@ switch (option){
     var storage = prompt('Enter Storage name : ');
     var con = prompt('Enter Container Name : ');
     async function test1() {
-      const { error,stdout, stderr } = await exec('$StorageAccount = Get-AzStorageAccount -ResourceGroupName "arm-vscode" -Name "'+storage+'";$Context = $StorageAccount.Context;New-AzStorageContainer -Name '+con+' -Context $Context -Permission Blob',{'shell':'powershell.exe'});
+      const { error,stdout, stderr } = await exec('$StorageAccount = Get-AzStorageAccount -ResourceGroupName "arm-vscode" -Name "'+storage+
+                                                  '";$Context = $StorageAccount.Context;New-AzStorageContainer -Name '+con+
+                                                  ' -Context $Context -Permission Blob',{'shell':'powershell.exe'});
       if (stderr) {
         return {"error": stderr};
       }
@@ -54,30 +61,71 @@ switch (option){
 
   case 3:
     var storage = prompt('Enter Storage name : ');
-    var cont = prompt('Enter Container name : ');
-    var file = prompt('Enter file path : ');
-    var fname = prompt('Enter file name : ');
-    async function test2() {
-      const { error,stdout, stderr } = await exec('$StorageAccount = Get-AzStorageAccount -ResourceGroupName "arm-vscode" -Name "'+storage+'";$Context = $StorageAccount.Context;$Blob1HT = @{File = '+file+' ; Container        = "'+cont+'";Blob             = "'+fname+'"; Context          = $Context};Set-AzStorageBlobContent @Blob1HT',{'shell':'powershell.exe'});
-      if (stderr) {
-        return {"error": stderr};
+  var cont = prompt('Enter Container name : ');
+  var file = prompt('Enter file path : ');
+  var fname = prompt('Enter file name : ');
+  var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+  if (!allowedExtensions.exec(file)) {
+  console.log(chalk.red.bold("Invalid File Extension"));
+  } else {
+    cv_api.imageAna(file,(error,value)=>{
+        if (value.adult.isAdultContent == true || value.adult.isRacyContent == true || value.adult.isGoryContent == true){
+            console.log('Image contains Adult Content ')
+        }
+        else{
+            download.download(file,"google.png",function () { });
+            const imagepath = path.join(__dirname, "/google.png");
+            fs.writeFileSync('abc.txt',JSON.stringify(value))
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+    if (!allowedExtensions.exec(file)) {
+      console.log(chalk.red.bold("Invalid File Extension"));
+      } else {
+        async function test2() {
+          const { error,stdout, stderr } = await exec('$StorageAccount = Get-AzStorageAccount -ResourceGroupName "arm-vscode" -Name "'+storage+
+                                                      '";$Context = $StorageAccount.Context;$Blob1HT = @{File = "'+imagepath+
+                                                      '" ; Container= "'+cont+'";Blob= "'+fname+'"; Context= $Context};Set-AzStorageBlobContent @Blob1HT',
+                                                      {'shell':'powershell.exe'});
+          if (stderr) {
+            return {"error": stderr};
+          }
+          return {"data": stdout};
+        };
+        test2().then( x => {
+          console.log(chalk.green.bold('File Uploaded'))
+          async function test2() {
+            const { error,stdout, stderr } = await exec('$StorageAccount = Get-AzStorageAccount -ResourceGroupName "arm-vscode" -Name "'+storage+
+            '";$Context = $StorageAccount.Context;$Blob2HT = @{File = "C:/Users/abhis/OneDrive/Desktop/Cognizant/Cognizant/Node Js/Cloud_AI/Project 1/abc.txt" ; Container= "'+cont+
+            '";Blob= "'+fname +'txt"; Context= $Context};Set-AzStorageBlobContent @Blob2HT',
+            {'shell':'powershell.exe'});
+          if (stderr) {
+            return {"error": stderr};
+          }
+          return {"data": stdout};
+        };
+        test2().then( x => {
+          console.log(chalk.green.bold('File Uploaded'))
+          
+        }).catch(err=>{
+        console.log(err.stderr)
+        })
+        
+        }).catch(err=>{
+        console.log(err.stderr)
+        })
       }
-      return {"data": stdout};
-    };
-
-    test2().then( x => {
-
-      console.log(chalk.green.bold('File Uploaded'))
-    }).catch(err=>{
-    console.log(err.stderr)
+        }
     })
+  }
+
     break;
 
   case 4:
     var storage = prompt('Enter Storage name : ');
     var con = prompt('Enter Container Name : ');
     async function test3() {
-      const { error,stdout, stderr } = await exec('$StorageAccount = Get-AzStorageAccount -ResourceGroupName "arm-vscode" -Name "'+storage+'";$Context = $StorageAccount.Context;Get-AzStorageBlob -Container "'+con+'" -Context $Context ',{'shell':'powershell.exe'});
+      const { error,stdout, stderr } = await exec('$StorageAccount = Get-AzStorageAccount -ResourceGroupName "arm-vscode" -Name "'+storage+
+                                                  '";$Context = $StorageAccount.Context;Get-AzStorageBlob -Container "'+con+
+                                                  '" -Context $Context ',{'shell':'powershell.exe'});
       if (stderr) {
         return {"error": stderr};
       }
@@ -94,4 +142,5 @@ switch (option){
 
   default :
   console.log(chalk.red.bold('Enter Valid Option'))
+  break;
 }
